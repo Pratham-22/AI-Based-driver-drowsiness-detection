@@ -1,0 +1,29 @@
+Algorithm
+The approach we will be using for this Python project is as follows:
+Step 1 – Take an image as input from a web-camera.
+To access the webcam, we made an infinite loop that will capture each frame. We use the
+method provided by OpenCV, cv2.VideoCapture(0) to access the camera and set the capture
+object (cap). cap.read() will read each frame and we store the image in a frame variable.
+Step 2 – Detect the face in the image and create a Region of Interest (ROI).
+To detect the face in the image, we need to first convert the image into grayscale as the OpenCV
+algorithm for object detection takes gray images in the input. We don’t need color information
+to detect the objects. We will be using a haar cascade classifier to detect faces. This line is used
+to set our classifier:
+face = cv2.CascadeClassifier(‘path to our haar cascade XML file’). Then
+we perform the detection using faces = face.detectMultiScale(gray).
+It returns an array of detections with x,y coordinates, and height, the width of the boundary box
+of the object. Now we can iterate over the faces and draw boundary boxes for each face.
+Code Snippet:
+1. for (x,y,w,h) in faces:
+2. cv2.rectangle(frame, (x,y), (x+w, y+h), (100,100,100), 1 )
+Step 3 – Detect the eyes from ROI and feed it to the classifier.
+The same procedure to detect faces is used to detect eyes. First, we set the cascade classifier
+for eyes in leye and reye respectively then detect the eyes using
+left_eye = leye.detectMultiScale(gray).
+Now we need to extract only the eyes data from the full image. This can be achieved by
+extracting the boundary box of the eye and then we can pull out the eye image from the frame
+with this code.
+Code Snippet:
+l_eye = frame[ y : y+h, x : x+w ]
+l_eye only contains the image data of the eye. This will be fed into our CNN classifier which
+will predict if eyes are open or closed. Similarly, we will be extracting the right eye into r_eye.
